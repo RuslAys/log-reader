@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileExplorer {
-    public List<Integer> fileContainsText(File file, String text, FileHolder fileHolder){
+    public List<Integer> findText(File file, String text){
         List<Integer> indexes = new LinkedList<>();
         try(BufferedReader bf = new BufferedReader(new FileReader(file.getName()))){
             String line;

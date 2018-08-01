@@ -15,9 +15,8 @@ public class DirectoryExplorer {
 
             if(f.isFile()){
                 if(checkExtension(f, ext)) {
-                    if(fileExplorer.fileContainsText(f, "text test")){
-                        System.out.println(f.getPath());
-                    }
+                    System.out.println(f.getPath());
+                    System.out.println(fileExplorer.findText(f, "text test"));
                 }
             }else {
                 explore(path + File.separator + dir, ext);
