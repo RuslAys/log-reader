@@ -1,10 +1,14 @@
 package log_reader.core;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DirectoryExplorer {
+    private List<FileHolder> holder = new LinkedList<>();
+
     FileExplorer fileExplorer = new FileExplorer();
-    public void explore(String path, String ext){
+    public List<FileHolder> getAllFilesWithText(String path, String ext, String text){
         if(ext.charAt(0) != '.') ext = "." + ext;
 
         File file = new File(path);
@@ -12,16 +16,18 @@ public class DirectoryExplorer {
 
         for(String dir: dirList){
             File f = new File(path + File.separator + dir);
-
             if(f.isFile()){
                 if(checkExtension(f, ext)) {
-                    System.out.println(f.getPath());
-                    System.out.println(fileExplorer.findText(f, "text test"));
+                    List<Position> indexes = fileExplorer.findTextInFile(f, text);
+                    if(indexes.size() != 0){
+                        holder.add(new FileHolder(f, indexes));
+                    }
                 }
             }else {
-                explore(path + File.separator + dir, ext);
+                getAllFilesWithText(path + File.separator + dir, ext, text);
             }
         }
+        return holder;
     }
 
     private boolean checkExtension(File f, String ext){

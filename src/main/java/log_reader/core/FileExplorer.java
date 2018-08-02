@@ -8,16 +8,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileExplorer {
-    public List<Integer> findText(File file, String text){
-        List<Integer> indexes = new LinkedList<>();
-        try(BufferedReader bf = new BufferedReader(new FileReader(file.getName()))){
+    public List<Position> findTextInFile(File file, String text){
+        List<Position> indexes = new LinkedList<>();
+        try(BufferedReader bf = new BufferedReader(new FileReader(file.getAbsolutePath()))){
             String line;
-            int index = 0;
+            int row = 0;
             while ((line = bf.readLine()) != null){
-                index++;
-                if(line.contains(text)){
-                    indexes.add(index);
+
+                int diff = line.length() - text.length();
+                int index = 0;
+                while (index <= diff){
+                    int column = line.indexOf(text, index);
+                    if(column == -1){
+                        index++;
+                    }else{
+                        indexes.add(new Position(row, column));
+                        index = column + text.length();
+                    }
                 }
+                row++;
             }
         }catch (IOException e){
             e.printStackTrace();

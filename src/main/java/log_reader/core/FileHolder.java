@@ -5,9 +5,9 @@ import java.util.List;
 
 public class FileHolder {
     private File file;
-    private List<Integer> indexes;
+    private List<Position> indexes;
 
-    public FileHolder(File file, List<Integer> indexes) {
+    public FileHolder(File file, List<Position> indexes) {
         this.file = file;
         this.indexes = indexes;
     }
@@ -23,11 +23,18 @@ public class FileHolder {
         this.file = file;
     }
 
-    public List<Integer> getIndexes() {
+    public List<Position> getIndexes() {
         return indexes;
     }
 
-    public void setIndexes(List<Integer> indexes) {
+    public void setIndexes(List<Position> indexes) {
         this.indexes = indexes;
+    }
+
+    @Override
+    public String toString() {
+        return "file=" + file.getAbsolutePath() +
+                ", indexes=" + indexes +
+                "\n";
     }
 }
