@@ -7,6 +7,7 @@
     <groupId>log-reader</groupId>
     <artifactId>log-reader</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <build>
         <plugins>
@@ -17,6 +18,14 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.8.3</version>
+                <configuration>
+                    <mainClass>log_reader.MainApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>
