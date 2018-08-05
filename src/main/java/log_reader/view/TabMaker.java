@@ -1,11 +1,8 @@
 package log_reader.view;
 
-import javafx.beans.value.ObservableSetValue;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import log_reader.core.FileHolder;
-import org.fxmisc.richtext.Caret;
-import org.fxmisc.richtext.StyleClassedTextArea;
 
 import java.io.BufferedReader;
 import java.io.File;
