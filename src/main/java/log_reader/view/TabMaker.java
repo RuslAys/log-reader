@@ -9,11 +9,11 @@ import log_reader.core.FileHolder;
 
 import java.io.File;
 
-public class TabMaker {
+class TabMaker {
 
     private int i = 0;
     private FileHolder holder;
-    ListView<String> listView = new ListView<>();
+    private ListView<String> listView = new ListView<>();
 
     void openTab(TabPane pane, TreeItem<FileHolder> item){
         Tab tab = new Tab();
@@ -25,7 +25,7 @@ public class TabMaker {
         listView.setCellFactory(TextFieldListCell.forListView());
         listView.setOnEditCommit(event ->
             listView.getItems().set(event.getIndex(), event.getNewValue()));
-//        listView.setEditable(true);
+        listView.setEditable(true);
 
         FileExplorer fileExplorer = new FileExplorer();
         fileExplorer.addTextToListView(file, listView);

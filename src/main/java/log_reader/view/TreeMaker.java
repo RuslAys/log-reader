@@ -6,7 +6,7 @@ import log_reader.core.FileHolder;
 
 import java.io.File;
 
-public class TreeMaker {
+class TreeMaker {
     TreeItem<FileHolder> getNodesForDirectory(File directory,
                                               String text,
                                               String ext){
