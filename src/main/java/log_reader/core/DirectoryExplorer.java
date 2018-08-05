@@ -18,9 +18,9 @@ public class DirectoryExplorer {
             File f = new File(path + File.separator + dir);
             if(f.isFile()){
                 if(checkExtension(f, ext)) {
-                    List<Position> indexes = fileExplorer.findTextInFile(f, text);
-                    if(indexes.size() != 0){
-                        holder.add(new FileHolder(f, indexes));
+                    FileHolder fileHolder = fileExplorer.findTextInFile(f, text);
+                    if(fileHolder.getIndexes().size() != 0){
+                        holder.add(fileHolder);
                     }
                 }
             }else {

@@ -8,13 +8,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileExplorer {
-    public List<Position> findTextInFile(File file, String text){
+    public FileHolder findTextInFile(File file, String text){
+        FileHolder fileHolder = new FileHolder();
         List<Position> indexes = new LinkedList<>();
         try(BufferedReader bf = new BufferedReader(new FileReader(file.getAbsolutePath()))){
             String line;
             int row = 0;
             while ((line = bf.readLine()) != null){
-
                 int diff = line.length() - text.length();
                 int index = 0;
                 while (index <= diff){
@@ -31,6 +31,8 @@ public class FileExplorer {
         }catch (IOException e){
             e.printStackTrace();
         }
-        return indexes;
+        fileHolder.setFile(file);
+        fileHolder.setIndexes(indexes);
+        return fileHolder;
     }
 }

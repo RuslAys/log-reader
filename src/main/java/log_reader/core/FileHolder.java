@@ -15,6 +15,10 @@ public class FileHolder {
     public FileHolder() {
     }
 
+    public FileHolder(File file) {
+        this.file = file;
+    }
+
     public File getFile() {
         return file;
     }
@@ -33,8 +37,6 @@ public class FileHolder {
 
     @Override
     public String toString() {
-        return "file=" + file.getAbsolutePath() +
-                ", indexes=" + indexes +
-                "\n";
+        return file.getName();
     }
 }
