@@ -1,5 +1,7 @@
 package log_reader.core;
 
+import javafx.scene.control.ListView;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,5 +36,17 @@ public class FileExplorer {
         fileHolder.setFile(file);
         fileHolder.setIndexes(indexes);
         return fileHolder;
+    }
+
+    public void addTextToListView(File f, ListView<String> listView){
+        try(BufferedReader br = new BufferedReader(new FileReader(f))){
+            String s;
+            while ((s = br.readLine()) != null){
+                listView.getItems().add(s);
+            }
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

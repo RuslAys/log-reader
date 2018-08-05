@@ -2,7 +2,10 @@ package log_reader.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
@@ -10,7 +13,6 @@ import javafx.stage.Stage;
 import log_reader.core.FileHolder;
 
 import java.io.File;
-import java.io.IOException;
 
 public class MainApp extends Application{
     private static final int MAX_TABS_NUMBER = 5;
@@ -24,6 +26,7 @@ public class MainApp extends Application{
     private Button searchButton = new Button();
     private TextField textToSearch = new TextField();
     private TextField extension = new TextField();
+    private TextField pathToFolder = new TextField();
     private File choice;
 
     public static void main(String[] args) {
@@ -32,9 +35,6 @@ public class MainApp extends Application{
 
     @Override
     public void start(Stage primaryStage){
-//        String resource = "/fxml/start.fxml";
-//        FXMLLoader loader = new FXMLLoader();
-//        pane = loader.load(getClass().getResourceAsStream(resource));
         chooseDirectory.setText("Choose directory");
         chooseDirectory.setOnAction(event->
                 showDirectories(primaryStage));
@@ -46,6 +46,7 @@ public class MainApp extends Application{
         extension.setText("log");
         extension.setPromptText("Extension");
         box.getChildren().addAll(chooseDirectory,
+                pathToFolder,
                 textToSearch,
                 extension,
                 searchButton,
@@ -69,6 +70,7 @@ public class MainApp extends Application{
                 AlertMaker.showAlert("Could not open directory");
             }else {
                 this.choice = choice;
+                pathToFolder.setText(choice.getAbsolutePath());
             }
         }
     }
@@ -76,7 +78,8 @@ public class MainApp extends Application{
     private void readFile(){
         if(tabPane.getTabs().size() < MAX_TABS_NUMBER){
             TabMaker tabMaker = new TabMaker();
-            tabMaker.openTab(tabPane, directoryTree.getSelectionModel().getSelectedItem());
+            tabMaker.openTab(tabPane,
+                    directoryTree.getSelectionModel().getSelectedItem());
         }else {
             AlertMaker.showAlert("Max tabs` number is " + MAX_TABS_NUMBER);
         }
@@ -86,9 +89,10 @@ public class MainApp extends Application{
         TreeMaker maker = new TreeMaker();
         if(choice == null){
             AlertMaker.showAlert("Could not open directory");
+        }else {
+            directoryTree.setRoot(maker.getNodesForDirectory(choice,
+                    textToSearch.getText(),
+                    extension.getText()));
         }
-        directoryTree.setRoot(maker.getNodesForDirectory(choice,
-                textToSearch.getText(),
-                extension.getText()));
     }
 }
