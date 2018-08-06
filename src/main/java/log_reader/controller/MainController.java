@@ -12,24 +12,28 @@ import log_reader.view.AlertMaker;
 import log_reader.view.TabMaker;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 
 public class MainController {
-    private static final int MAX_TABS_NUMBER = 5;
+
 
     public void readFile(TreeView<FileHolder> directoryTree, TabPane tabPane){
-        if(tabPane.getTabs().size() < MAX_TABS_NUMBER){
+        try {
             TabMaker tabMaker = new TabMaker();
             tabMaker.openTab(tabPane,
                     directoryTree.getSelectionModel().getSelectedItem());
-        }else {
-            AlertMaker.showAlert("Max tabs` number is " + MAX_TABS_NUMBER);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+            AlertMaker.showAlert("File not found");
         }
     }
 
     public void startSearch(File choice,
                              TreeView<FileHolder> directoryTree,
                              TextField textToSearch,
-                             TextField extension){
+                             TextField extension) throws FileNotFoundException {
         if(choice == null){
             AlertMaker.showAlert("Could not open directory");
         }else {
@@ -56,7 +60,7 @@ public class MainController {
 
     private TreeItem<FileHolder> getNodesForDirectory(File directory,
                                                      String text,
-                                                     String ext){
+                                                     String ext) throws FileNotFoundException {
         FileHolder holder = new FileHolder(directory);
         TreeItem<FileHolder> root = new TreeItem<>(holder);
         File[] fileList = directory.listFiles();
@@ -67,7 +71,10 @@ public class MainController {
                 }else {
                     if(isRightExtension(f, ext)){
                         FileExplorer explorer = new FileExplorer();
-                        FileHolder fileHolder = explorer.findTextInFile(f, text);
+                        InputStreamReader isr = new InputStreamReader(
+                                new FileInputStream(f)
+                        );
+                        FileHolder fileHolder = explorer.findTextInFile(isr, text);
                         if(fileHolder.getIndexes().size() != 0){
                             root.getChildren().add(new TreeItem<>(fileHolder));
                         }

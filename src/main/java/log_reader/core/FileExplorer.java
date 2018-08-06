@@ -1,45 +1,37 @@
 package log_reader.core;
 
 import javafx.scene.control.ListView;
+import jcifs.smb.NtlmAuthenticator;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileInputStream;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FileExplorer {
-    public FileHolder findTextInFile(File file, String text){
+    public FileHolder findTextInFile(InputStreamReader isr, String text){
         FileHolder fileHolder = new FileHolder();
-        List<Position> indexes = new LinkedList<>();
-        try(BufferedReader bf = new BufferedReader(new FileReader(file.getAbsolutePath()))){
+        List<Integer> indexes = new LinkedList<>();
+        try(BufferedReader bf = new BufferedReader(isr)){
             String line;
-            int row = 0;
+            int index = 0;
             while ((line = bf.readLine()) != null){
-                int diff = line.length() - text.length();
-                int index = 0;
-                while (index <= diff){
-                    int column = line.indexOf(text, index);
-                    if(column == -1){
-                        index++;
-                    }else{
-                        indexes.add(new Position(row, column));
-                        index = column + text.length();
-                    }
-                }
-                row++;
+                if(line.contains(text)) indexes.add(index);
+                index++;
             }
         }catch (IOException e){
             e.printStackTrace();
         }
-        fileHolder.setFile(file);
-        fileHolder.setIndexes(indexes);
+//        fileHolder.setFile(file);
+//        fileHolder.setIndexes(indexes);
         return fileHolder;
     }
 
-    public void addTextToListView(File f, ListView<String> listView){
-        try(BufferedReader br = new BufferedReader(new FileReader(f))){
+    public void addTextToListView(InputStreamReader isr, ListView<String> listView){
+        try(BufferedReader br = new BufferedReader(isr)){
             String s;
             while ((s = br.readLine()) != null){
                 listView.getItems().add(s);
@@ -48,5 +40,32 @@ public class FileExplorer {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public InputStreamReader readSharedFolder(String ipaddrees,
+                                 String folderName,
+                                 String domain,
+                                 String username,
+                                 String password){
+        folderName = checkFolderName(folderName);
+
+        try{
+            NtlmPasswordAuthentication authenticator =
+                    new NtlmPasswordAuthentication(domain, username, password);
+            String path = folderName;
+
+            SmbFile baseDir = new SmbFile(path, authenticator);
+            SmbFileInputStream sfis = new SmbFileInputStream(baseDir);
+            return new InputStreamReader(sfis);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String checkFolderName(String folderName){
+        if(folderName.charAt(0) != '/') return "/" + folderName;
+        return folderName;
     }
 }

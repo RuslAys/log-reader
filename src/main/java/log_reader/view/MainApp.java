@@ -2,12 +2,10 @@ package log_reader.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import log_reader.controller.MainController;
 import log_reader.core.FileHolder;
@@ -17,7 +15,6 @@ import java.io.File;
 public class MainApp extends Application{
 
     private BorderPane pane = new BorderPane();
-    HBox box = new HBox();
     private TreeView<FileHolder> directoryTree = new TreeView<>();
     private TabPane tabPane = new TabPane();
     private Button chooseDirectory = new Button();
@@ -26,6 +23,12 @@ public class MainApp extends Application{
     private TextField textToSearch = new TextField();
     private TextField extension = new TextField();
     private TextField pathToFolder = new TextField();
+    private TextField ipAddress = new TextField();
+    private TextField sharedFolder = new TextField();
+    private TextField domain = new TextField();
+    private TextField username = new TextField();
+    private PasswordField password = new PasswordField();
+
     private File choice;
     private MainController controller = new MainController();
 
@@ -35,6 +38,7 @@ public class MainApp extends Application{
 
     @Override
     public void start(Stage primaryStage){
+        HBox boxTop = new HBox();
         chooseDirectory.setText("Choose directory");
         chooseDirectory.setOnAction(event->
                 choice = controller.openFolder(
@@ -53,13 +57,31 @@ public class MainApp extends Application{
         textToSearch.setPromptText("Text to search");
         extension.setText("log");
         extension.setPromptText("Extension");
-        box.getChildren().addAll(chooseDirectory,
+        boxTop.getChildren().addAll(chooseDirectory,
                 pathToFolder,
                 textToSearch,
                 extension,
                 searchButton,
                 openItem);
-        pane.setTop(box);
+
+        HBox boxBot = new HBox();
+        ipAddress.setPromptText("IP Address");
+        sharedFolder.setPromptText("Shared folder");
+        domain.setPromptText("Domain");
+        username.setPromptText("Username");
+        password.setPromptText("Password");
+        boxBot.getChildren().addAll(
+                ipAddress,
+                sharedFolder,
+                domain,
+                username,
+                password
+        );
+
+        VBox topVBox = new VBox();
+        topVBox.getChildren().addAll(boxTop, boxBot);
+
+        pane.setTop(topVBox);
         pane.setLeft(directoryTree);
         pane.setCenter(tabPane);
         Scene scene = new Scene(pane, 800, 480);
