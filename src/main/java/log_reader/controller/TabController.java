@@ -18,7 +18,7 @@ public class TabController {
     }
 
     private void scrollAndSelectItem(ListView<String> listView, FileHolder holder){
-        int pos = holder.getIndexes().get(i).getRow();
+        int pos = holder.getIndexes().get(i);
         listView.getSelectionModel().clearSelection();
         listView.getSelectionModel().select(pos);
         listView.scrollTo(pos);
