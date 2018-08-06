@@ -4,18 +4,19 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import log_reader.controller.TabController;
 import log_reader.core.FileExplorer;
 import log_reader.core.FileHolder;
 
 import java.io.File;
 
-class TabMaker {
+public class TabMaker {
 
-    private int i = 0;
     private FileHolder holder;
     private ListView<String> listView = new ListView<>();
+    private TabController controller = new TabController();
 
-    void openTab(TabPane pane, TreeItem<FileHolder> item){
+    public void openTab(TabPane pane, TreeItem<FileHolder> item){
         Tab tab = new Tab();
         holder = item.getValue();
         File file = holder.getFile();
@@ -32,26 +33,18 @@ class TabMaker {
 
         Button down = new Button();
         down.setText("Down");
-        down.setOnAction(event -> {
-            if(i < holder.getIndexes().size()){
-                selectItem();
-                i++;
-            }
-        });
+        down.setOnAction(event ->
+            controller.scrollDownAndSelectItem(listView, holder));
 
         Button up = new Button();
         up.setText("Up");
-        up.setOnAction(event -> {
-            if(i > 0){
-                selectItem();
-                i--;
-            }
-        });
+        up.setOnAction(event ->
+            controller.scrollUpAndSelectItem(listView, holder));
 
         Button selectAll = new Button();
         selectAll.setText("Select all");
         selectAll.setOnAction(event ->
-            listView.getSelectionModel().selectAll());
+            controller.selectAll(listView));
         VBox vBox = new VBox();
         HBox hBox = new HBox();
         hBox.getChildren().addAll(up, down, selectAll);
@@ -59,12 +52,5 @@ class TabMaker {
 
         tab.setContent(vBox);
         pane.getTabs().add(tab);
-    }
-
-    private void selectItem(){
-        int pos = holder.getIndexes().get(i).getRow();
-        listView.getSelectionModel().clearSelection();
-        listView.getSelectionModel().select(pos);
-        listView.scrollTo(pos);
     }
 }

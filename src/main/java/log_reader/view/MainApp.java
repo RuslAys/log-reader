@@ -8,14 +8,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import log_reader.controller.MainController;
 import log_reader.core.FileHolder;
 
 import java.io.File;
 
 public class MainApp extends Application{
-    private static final int MAX_TABS_NUMBER = 5;
 
     private BorderPane pane = new BorderPane();
     HBox box = new HBox();
@@ -28,6 +27,7 @@ public class MainApp extends Application{
     private TextField extension = new TextField();
     private TextField pathToFolder = new TextField();
     private File choice;
+    private MainController controller = new MainController();
 
     public static void main(String[] args) {
         launch(args);
@@ -37,11 +37,19 @@ public class MainApp extends Application{
     public void start(Stage primaryStage){
         chooseDirectory.setText("Choose directory");
         chooseDirectory.setOnAction(event->
-                showDirectories(primaryStage));
+                choice = controller.openFolder(
+                        primaryStage,
+                        pathToFolder));
         openItem.setText("Open item");
-        openItem.setOnAction(event -> readFile());
+        openItem.setOnAction(event ->
+                controller.readFile(directoryTree, tabPane));
         searchButton.setText("Search");
-        searchButton.setOnAction(event -> startSearch());
+        searchButton.setOnAction(event ->
+                controller.startSearch(
+                        choice,
+                        directoryTree,
+                        textToSearch,
+                        extension));
         textToSearch.setPromptText("Text to search");
         extension.setText("log");
         extension.setPromptText("Extension");
@@ -59,40 +67,5 @@ public class MainApp extends Application{
         primaryStage.setTitle("Log reader");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    private void showDirectories(Stage stage){
-        DirectoryChooser dc = new DirectoryChooser();
-        dc.setInitialDirectory(new File(System.getProperty("user.home")));
-        File choice = dc.showDialog(stage);
-        if(choice != null){
-            if(!choice.isDirectory()){
-                AlertMaker.showAlert("Could not open directory");
-            }else {
-                this.choice = choice;
-                pathToFolder.setText(choice.getAbsolutePath());
-            }
-        }
-    }
-
-    private void readFile(){
-        if(tabPane.getTabs().size() < MAX_TABS_NUMBER){
-            TabMaker tabMaker = new TabMaker();
-            tabMaker.openTab(tabPane,
-                    directoryTree.getSelectionModel().getSelectedItem());
-        }else {
-            AlertMaker.showAlert("Max tabs` number is " + MAX_TABS_NUMBER);
-        }
-    }
-
-    private void startSearch(){
-        TreeMaker maker = new TreeMaker();
-        if(choice == null){
-            AlertMaker.showAlert("Could not open directory");
-        }else {
-            directoryTree.setRoot(maker.getNodesForDirectory(choice,
-                    textToSearch.getText(),
-                    extension.getText()));
-        }
     }
 }
