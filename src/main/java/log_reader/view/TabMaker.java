@@ -55,9 +55,14 @@ public class TabMaker {
             selectAll.setText("Select all");
             selectAll.setOnAction(event ->
                 controller.selectAll(listView));
+
+            Button copySelected = new Button();
+            copySelected.setText("Copy selected to clipboard");
+            copySelected.setOnAction(event ->
+                    controller.copySelectedFiles(listView));
             VBox vBox = new VBox();
             HBox hBox = new HBox();
-            hBox.getChildren().addAll(up, down, selectAll);
+            hBox.getChildren().addAll(up, down, selectAll, copySelected);
             vBox.getChildren().addAll(hBox, listView);
 
             tab.setContent(vBox);
