@@ -7,10 +7,8 @@ import javafx.scene.layout.VBox;
 import log_reader.controller.TabController;
 import log_reader.core.FileExplorer;
 import log_reader.core.FileHolder;
+import log_reader.core.StreamCreator;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 public class TabMaker {
@@ -20,13 +18,12 @@ public class TabMaker {
     private ListView<String> listView = new ListView<>();
     private TabController controller = new TabController();
 
-    public void openTab(TabPane pane, TreeItem<FileHolder> item) throws FileNotFoundException {
+    public void openTab(TabPane pane, TreeItem<FileHolder> item) {
         if(pane.getTabs().size() < MAX_TABS_NUMBER){
             Tab tab = new Tab();
             holder = item.getValue();
-            File file = holder.getFile();
 
-            tab.setText(file.getName());
+            tab.setText(holder.getName());
             listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             listView.setCellFactory(TextFieldListCell.forListView());
             listView.setOnEditCommit(event ->
@@ -34,9 +31,14 @@ public class TabMaker {
             listView.setEditable(true);
 
             FileExplorer fileExplorer = new FileExplorer();
-            InputStreamReader isr = new InputStreamReader(
-                    new FileInputStream(file)
-            );
+            InputStreamReader isr;
+            if(holder.getFile() != null) {
+                isr = new InputStreamReader(
+                        StreamCreator.getStream(holder.getFile()));
+            }else {
+                isr = new InputStreamReader(
+                        StreamCreator.getStream(holder.getSmbFile()));
+            }
             fileExplorer.addTextToListView(isr, listView);
 
             Button down = new Button();

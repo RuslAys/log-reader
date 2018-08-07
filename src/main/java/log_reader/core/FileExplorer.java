@@ -1,18 +1,18 @@
 package log_reader.core;
 
 import javafx.scene.control.ListView;
-import jcifs.smb.NtlmAuthenticator;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
-import jcifs.smb.SmbFileInputStream;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
 public class FileExplorer {
-    public FileHolder findTextInFile(InputStreamReader isr, String text){
+    public FileHolder findTextInFile(InputStreamReader isr, String text, Object file){
         FileHolder fileHolder = new FileHolder();
         List<Integer> indexes = new LinkedList<>();
         try(BufferedReader bf = new BufferedReader(isr)){
@@ -25,8 +25,12 @@ public class FileExplorer {
         }catch (IOException e){
             e.printStackTrace();
         }
-//        fileHolder.setFile(file);
-//        fileHolder.setIndexes(indexes);
+        if(file instanceof File){
+            fileHolder.setFile((File) file);
+        }else{
+            fileHolder.setSmbFile((SmbFile) file);
+        }
+        fileHolder.setIndexes(indexes);
         return fileHolder;
     }
 
@@ -36,13 +40,12 @@ public class FileExplorer {
             while ((s = br.readLine()) != null){
                 listView.getItems().add(s);
             }
-
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    public InputStreamReader readSharedFolder(String ipaddrees,
+    public SmbFile readSharedFolder(String ipAddrees,
                                  String folderName,
                                  String domain,
                                  String username,
@@ -52,12 +55,10 @@ public class FileExplorer {
         try{
             NtlmPasswordAuthentication authenticator =
                     new NtlmPasswordAuthentication(domain, username, password);
-            String path = folderName;
+            String path = "smb://" + ipAddrees + folderName;
 
             SmbFile baseDir = new SmbFile(path, authenticator);
-            SmbFileInputStream sfis = new SmbFileInputStream(baseDir);
-            return new InputStreamReader(sfis);
-
+            return baseDir;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -65,7 +66,9 @@ public class FileExplorer {
     }
 
     private String checkFolderName(String folderName){
-        if(folderName.charAt(0) != '/') return "/" + folderName;
+        if(folderName.charAt(0) != '/') folderName = "/" + folderName;
+        if(!folderName.endsWith("/")) folderName = folderName + "/";
+        folderName = folderName.replace("\\", "/");
         return folderName;
     }
 }

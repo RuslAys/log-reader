@@ -20,6 +20,7 @@ public class MainApp extends Application{
     private Button chooseDirectory = new Button();
     private Button openItem = new Button();
     private Button searchButton = new Button();
+    private Button searchSharedFolder = new Button();
     private TextField textToSearch = new TextField();
     private TextField extension = new TextField();
     private TextField pathToFolder = new TextField();
@@ -61,8 +62,7 @@ public class MainApp extends Application{
                 pathToFolder,
                 textToSearch,
                 extension,
-                searchButton,
-                openItem);
+                searchButton);
 
         HBox boxBot = new HBox();
         ipAddress.setPromptText("IP Address");
@@ -70,16 +70,28 @@ public class MainApp extends Application{
         domain.setPromptText("Domain");
         username.setPromptText("Username");
         password.setPromptText("Password");
+        searchSharedFolder.setText("Search shared folder");
+        searchSharedFolder.setOnAction(event -> controller.startSearchSharedFolder(
+                ipAddress.getText(),
+                sharedFolder.getText(),
+                domain.getText(),
+                username.getText(),
+                password.getText(),
+                textToSearch.getText(),
+                extension.getText(),
+                directoryTree
+        ));
         boxBot.getChildren().addAll(
                 ipAddress,
                 sharedFolder,
                 domain,
                 username,
-                password
+                password,
+                searchSharedFolder
         );
 
         VBox topVBox = new VBox();
-        topVBox.getChildren().addAll(boxTop, boxBot);
+        topVBox.getChildren().addAll(boxTop, boxBot, openItem);
 
         pane.setTop(topVBox);
         pane.setLeft(directoryTree);
