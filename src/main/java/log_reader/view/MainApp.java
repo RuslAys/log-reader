@@ -96,8 +96,7 @@ public class MainApp extends Application{
         pane.setTop(topVBox);
         pane.setLeft(directoryTree);
         pane.setCenter(tabPane);
-        Scene scene = new Scene(pane, 800, 480);
-        scene.getStylesheets().add("styles.css");
+        Scene scene = new Scene(pane, 900, 480);
         primaryStage.setTitle("Log reader");
         primaryStage.setScene(scene);
         primaryStage.show();
